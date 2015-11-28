@@ -29,6 +29,9 @@ class BaseNode(object):
     for var, type_ in self.variables.items():
       self.__setattr__(var, type_())
 
+  def __str__(self):
+    return ', '.join('{}={}'.format(*item) for item in self.get_state().items())
+
   def is_active(self):
     '''Check if there exists any active rule in the node.
     '''
