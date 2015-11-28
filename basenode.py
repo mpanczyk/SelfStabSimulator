@@ -47,8 +47,9 @@ class BaseNode(object):
     ]
     if not names:
       raise NotImplementedError(
-        'You must implement at least one rule in the %s class.'
-        % klass.__name__
+        'You must implement at least one rule in the {} class.'.format(
+          klass.__name__,
+        )
       )
     return names
 
