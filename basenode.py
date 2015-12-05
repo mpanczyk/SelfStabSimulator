@@ -25,12 +25,24 @@ class BaseNode(object):
   '''
 
   def __init__(self):
-    self.neighbours = None
+    self.neighbours = set()
     for var, type_ in self.variables.items():
       self.__setattr__(var, type_())
 
   def __str__(self):
     return ', '.join('{}={}'.format(*item) for item in self.get_state().items())
+
+  def connect(self, other):
+    if other not in self.neighbours:
+      self.neighbours.add(other)
+    if self not in other.neighbours:
+      other.neighbours.add(self)
+
+  def disconnect(self, other):
+    if other in self.neighbours:
+      self.neighbours.remove(other)
+    if self in other.neighbours:
+      other.neighbours.remove(self)
 
   def is_active(self):
     '''Check if there exists any active rule in the node.
