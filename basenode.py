@@ -24,13 +24,22 @@ class BaseNode(object):
                and their values as the dict values.
   '''
 
-  def __init__(self):
-    self.neighbours = set()
-    for var, type_ in self.variables.items():
-      self.__setattr__(var, type_())
+  def __init__(self, **kwargs):
 
   def __str__(self):
     return ', '.join('{}={}'.format(*item) for item in self.get_state().items())
+    self.neighbours = set()
+    for neighbour in kwargs.pop('neighbours', ()):
+      self.connect(neighbour)
+
+    self.variables = set()
+    for var, val in kwargs.items():
+      self.__setattr__(var, val)
+      self.variables.add(var)
+    for var, type_ in self.__class__.variables.items():
+      if var not in self.__dict__:
+        self.__setattr__(var, type_())
+        self.variables.add(var)
 
   def connect(self, other):
     if other not in self.neighbours:
