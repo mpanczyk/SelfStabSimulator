@@ -26,8 +26,6 @@ class BaseNode(object):
 
   def __init__(self, **kwargs):
 
-  def __str__(self):
-    return ', '.join('{}={}'.format(*item) for item in self.get_state().items())
     self.neighbours = set()
     for neighbour in kwargs.pop('neighbours', ()):
       self.connect(neighbour)
@@ -40,6 +38,12 @@ class BaseNode(object):
       if var not in self.__dict__:
         self.__setattr__(var, type_())
         self.variables.add(var)
+
+  def __repr__(self):
+    return self.__class__.__name__ +\
+            '(' +\
+              ', '.join('{}={}'.format(*item) for item in self.get_state().items()) +\
+            ')'
 
   def connect(self, other):
     if other not in self.neighbours:
