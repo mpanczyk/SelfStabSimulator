@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import random
+import uuid
 from randomtypes import (
   RandomInt,
   RandomBool,
@@ -26,11 +27,13 @@ class BaseNode(object):
 
   def __init__(self, **kwargs):
 
+    self.id = uuid.uuid4()
+
     self.neighbours = set()
     for neighbour in kwargs.pop('neighbours', ()):
       self.connect(neighbour)
 
-    self.variables = set()
+    self.variables = set(('id',))
     for var, val in kwargs.items():
       self.__setattr__(var, val)
       self.variables.add(var)
