@@ -12,17 +12,12 @@ class BaseNode(object):
   '''Abstract class representing a node in a self-stabilising system.
      
      Its subclasses ought to implement a self-stabilising algorithm
-     by implementing methods 'guard_*' and 'assignment_*'
-     with corresponding suffixes in their names,
-     forming together a rule with the name as the suffix.
-     For example 'guard_1' and 'assignment_1'
-     form together a rule '1'.
-     For every 'guard_x' should exists 'assignment_x' and vice versa.
+     by implementing methods 'rule_*', for example 'rule_1'.
 
-     A 'guard_x' should return a pair:
-      - bool - True if the guard evaluates to True,
-      - dict - dictionary with temporary variable names as keys
-               and their values as the dict values.
+     A 'rule_x' should return a pair:
+      - bool - True if the guard of the rule evaluates to True,
+      - dict - dictionary with variable names as keys
+               and their new values as the dict values.
   '''
 
   def __init__(self, **kwargs):
@@ -68,10 +63,10 @@ class BaseNode(object):
   @classmethod
   def get_rule_names(klass):
     names = [
-      method_name[6:]
+      method_name[5:]
       for method_name
       in dir(klass)
-      if method_name.startswith('guard_')
+      if method_name.startswith('rule_')
     ]
     if not names:
       raise NotImplementedError(
@@ -81,23 +76,26 @@ class BaseNode(object):
       )
     return names
 
-  def get_guard(self, name):
-    return self.__getattribute__('guard_' + name)
-
-  def get_assignment(self, name):
-    return self.__getattribute__('assignment_' + name)
+  def get_rule(self, name):
+    return self.__getattribute__('rule_' + name)
 
   def get_active_rules(self):
     return [
       name
       for name in self.get_rule_names()
-      if self.get_guard(name)()[0]
+      if self.get_rule(name)()[0]
     ]
 
   @staticmethod
   def pick(items):
     '''Choose one rule amongst the active ones.'''
     return random.choice(items)
+
+  def assign(self, **kwargs):
+    '''Assign new values to the node's variables.
+       This way a node may change its state.
+    '''
+    self.__dict__.update(kwargs)
 
   def move(self):
     '''Pick up a random active rule in the node
@@ -106,11 +104,9 @@ class BaseNode(object):
     active_rule_names = self.get_active_rules()
     assert active_rule_names, 'There is no active rule in the node.'
     rule_name = self.pick(active_rule_names)
-    is_active, variables = self.get_guard(rule_name)()
+    is_active, variables = self.get_rule(rule_name)()
     assert is_active
-    assignment = self.get_assignment(rule_name)
-    assignment(**variables)
+    self.assign(**variables)
 
   def get_state(self):
     return {var: self.__getattribute__(var) for var in self.variables}
-

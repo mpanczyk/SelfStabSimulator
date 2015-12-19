@@ -16,7 +16,7 @@ class FooNode(basenode.BaseNode):
     'yess': RandomBool,
   }
 
-  def guard_1(self):
+  def rule_1(self):
     return (
       self.k != 1,
       {
@@ -25,9 +25,3 @@ class FooNode(basenode.BaseNode):
         'yess': False,
       }
     )
-
-  def assignment_1(self, **kwargs):
-    print('making a move')
-    print('I got this kwargs: ' + str(kwargs))
-    for k, v in kwargs.items():
-      self.__setattr__(k, v)
