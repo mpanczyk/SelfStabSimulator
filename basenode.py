@@ -42,7 +42,7 @@ class BaseNode(object):
   def __repr__(self):
     return self.__class__.__name__ +\
             '(' +\
-              ', '.join('{}={}'.format(*item) for item in self.get_state().items()) +\
+              ', '.join('{}={}'.format(var, repr(val)) for var, val in self.get_state().items()) +\
             ')'
 
   def connect(self, other):
