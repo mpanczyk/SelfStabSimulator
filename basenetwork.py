@@ -8,11 +8,11 @@ class BaseNetwork(object):
   def __init__(self):
     self.nodes = set()
 
-  def active_nodes(self):
-    return [node.is_active() for node in self.nodes]
+  def get_active_nodes(self):
+    return [node for node in self.nodes if node.is_active()]
 
   def is_stabilised(self):
-    return not self.active_nodes()
+    return not self.get_active_nodes()
 
   def __iadd__(self, node):
     self.nodes.add(node)
