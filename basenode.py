@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import random
 import uuid
 from randomtypes import (
   RandomInt,
   RandomBool,
 )
+import utils
 
 class BaseNode(object):
   '''Abstract class representing a node in a self-stabilising system.
@@ -86,11 +86,6 @@ class BaseNode(object):
       if self.get_rule(name)()[0]
     ]
 
-  @staticmethod
-  def pick(items):
-    '''Choose one rule amongst the active ones.'''
-    return random.choice(items)
-
   def assign(self, **kwargs):
     '''Assign new values to the node's variables.
        This way a node may change its state.
@@ -103,7 +98,7 @@ class BaseNode(object):
     '''
     active_rule_names = self.get_active_rules()
     assert active_rule_names, 'There is no active rule in the node.'
-    rule_name = self.pick(active_rule_names)
+    rule_name = utils.random_pick(active_rule_names)
     is_active, variables = self.get_rule(rule_name)()
     assert is_active
     self.assign(**variables)
