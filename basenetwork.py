@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import random
+import copy
+
+import utils
 
 class BaseNetwork(object):
 
@@ -23,3 +26,11 @@ class BaseNetwork(object):
       if node not in self.nodes:
         self.nodes.add(node)
     node1.connect(node2)
+
+  def run(self):
+    while not self.is_stabilised():
+      node = utils.random_pick( self.get_active_nodes() )
+      info = {'prestate': copy.copy(node)}
+      node.move()
+      info['poststate'] = copy.copy(node)
+      yield info
