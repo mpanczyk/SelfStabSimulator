@@ -11,9 +11,9 @@ class FooNode(basenode.BaseNode):
   '''Simple example subclass of the Node class'''
   
   variables = {
-    'k': RandomInt,
-    'yes': RandomBool,
-    'yess': RandomBool,
+    'k': RandomInt(),
+    'yes': RandomBool(),
+    'yess': RandomBool(),
   }
 
   def rule_1(self):

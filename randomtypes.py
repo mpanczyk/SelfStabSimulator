@@ -9,16 +9,27 @@ MAX_RAND_FLOAT = 300.0
 class RandomType(object):
   pass
 
-class RandomInt(int, RandomType):
-  def __new__(T, n=MAX_RAND_INT):
-    value = random.randint(0, MAX_RAND_INT)
-    return int.__new__(T, value)
+def RandomInt(upper_bound=MAX_RAND_INT):
+  class ClassRandomInt(int, RandomType):
+    def __new__(T):
+      value = random.randint(0, upper_bound)
+      return int.__new__(T, value)
+  ClassRandomInt.__name__ = 'RandomInt'
+  return ClassRandomInt
 
-class RandomBool(int, RandomType):
-  def __new__(T):
-    return int.__new__(T, random.randint(0, 1))
+def RandomBool():
+  class ClassRandomBool(int, RandomType):
+    def __new__(T):
+      return int.__new__(T, random.randint(0, 1))
+    def __repr__(self):
+      return 'True' if self else 'False'
+  ClassRandomBool.__name__ = 'RandomBool'
+  return ClassRandomBool
 
-class RandomFloat(float, RandomType):
-  def __new__(T, max=MAX_RAND_FLOAT):
-    value = random.random()*max
-    return float.__new__(T, value)
+def RandomFloat(upper_bound=MAX_RAND_FLOAT):
+  class ClassRandomFloat(float, RandomType):
+    def __new__(T):
+      value = random.random()*upper_bound
+      return float.__new__(T, value)
+  ClassRandomFloat.__name__ = 'RandomFloat'
+  return ClassRandomFloat

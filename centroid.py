@@ -7,6 +7,7 @@ import copy
 import basenode
 from randomtypes import (
   RandomBool,
+  RandomInt,
   RandomFloat,
 )
 
@@ -20,10 +21,9 @@ class CentroidAlgNode(basenode.BaseNode):
   '''
   
   variables = {
-    'W': lambda: collections.defaultdict(float),
-    'w': RandomFloat,
-    'p': lambda: None,
-    'root': RandomBool,
+    'W': lambda: collections.defaultdict(RandomFloat()),
+    'w': RandomFloat(),
+    'p': RandomInt(upper_bound=10),
   }
 
   def wCorrect(self):
