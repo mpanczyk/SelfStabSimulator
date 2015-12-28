@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import uuid
+
 from randomtypes import (
   RandomInt,
   RandomBool,
@@ -23,6 +24,7 @@ class BaseNode(object):
   def __init__(self, **kwargs):
 
     self.id = uuid.uuid4()
+    self.net = None
 
     self.neighbours = set()
     for neighbour in kwargs.pop('neighbours', ()):
@@ -44,10 +46,16 @@ class BaseNode(object):
             ')'
 
   def connect(self, other):
-    if other not in self.neighbours:
-      self.neighbours.add(other)
-    if self not in other.neighbours:
-      other.neighbours.add(self)
+    self.neighbours.add(other)
+    other.neighbours.add(self)
+    if self.net is None:
+      self.net = other.net
+    if other.net is None:
+      other.net = self.net
+    assert self.net is other.net
+    if self.net is not None:
+      self.net.nodes.add(self)
+      self.net.nodes.add(other)
 
   def disconnect(self, other):
     if other in self.neighbours:

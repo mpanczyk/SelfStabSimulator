@@ -19,12 +19,12 @@ class BaseNetwork(object):
 
   def __iadd__(self, node):
     self.nodes.add(node)
+    node.net = self
     return self
 
   def connect(self, node1, node2):
     for node in node1, node2:
-      if node not in self.nodes:
-        self.nodes.add(node)
+      self.nodes.add(node)
     node1.connect(node2)
 
   def run(self):
