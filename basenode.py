@@ -110,6 +110,7 @@ class BaseNode(object):
     is_active, variables = self.get_rule(rule_name)()
     assert is_active
     self.assign(**variables)
+    return rule_name
 
   def get_state(self):
     return {var: self.__getattribute__(var) for var in self.variables}

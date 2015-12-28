@@ -31,6 +31,7 @@ class BaseNetwork(object):
     while not self.is_stabilised():
       node = utils.random_pick( self.get_active_nodes() )
       info = {'prestate': copy.copy(node)}
-      node.move()
+      rule = node.move()
+      info['rule'] = rule
       info['poststate'] = copy.copy(node)
       yield info
