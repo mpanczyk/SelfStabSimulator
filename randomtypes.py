@@ -10,9 +10,7 @@ class RandomType(object):
   pass
 
 class RandomInt(int, RandomType):
-  def __new__(T, n=None):
-    if n is None:
-      n = MAX_RAND_INT
+  def __new__(T, n=MAX_RAND_INT):
     value = random.randint(0, MAX_RAND_INT)
     return int.__new__(T, value)
 
