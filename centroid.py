@@ -38,9 +38,7 @@ class CentroidAlgNode(basenode.BaseNode):
     if not correct:
       return_W = copy.copy(self.W)
       return_W[j.id] = new_weight
-      return True, {
-        'W': return_W,
-      }
+      return True, {'W': return_W}
     return False, {}
 
   def rule_2(self):
