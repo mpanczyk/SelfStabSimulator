@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import collections
-import copy
 
+from utils import (
+  updated_dict,
+)
 import basenode
 from randomtypes import (
   RandomBool,
@@ -36,9 +38,9 @@ class CentroidAlgNode(basenode.BaseNode):
   def rule_1(self):
     correct, j, new_weight = self.wCorrect()
     if not correct:
-      return_W = copy.copy(self.W)
-      return_W[j.id] = new_weight
-      return True, {'W': return_W}
+      return True, {
+        'W': updated_dict(self.W, j.id, new_weight),
+      }
     return False, {}
 
   def rule_2(self):
