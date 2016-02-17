@@ -2,6 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import uuid
+from PyQt5.QtCore import (
+  QPoint,
+)
+from PyQt5.QtGui import (
+  QBrush,
+  QColor,
+)
 
 from randomtypes import (
   RandomInt,
@@ -25,6 +32,7 @@ class BaseNode(object):
 
     self.id = uuid.uuid4()
     self.net = None
+    self._r = 10
 
     self.neighbours = set()
     for neighbour in kwargs.pop('neighbours', ()):
@@ -117,3 +125,27 @@ class BaseNode(object):
 
   def get_random_neighbour(self):
     return utils.random_pick(list(self.neighbours))
+
+  def centre(self):
+    return QPoint(self._x, self._y)
+
+  def get_color(self):
+    if self.is_active():
+      return QColor(0x1f, 0xff, 0x1f)
+    return QColor(0x8f, 0x8f, 0x8f)
+
+  def get_radius(self):
+    return self._r
+
+  def set_radius(self, r):
+    self._r = r
+
+  radius = property(get_radius, set_radius)
+
+  def draw(self, painter):
+    painter.setBrush(QBrush(self.get_color()))
+    painter.drawEllipse(
+      self.centre(),
+      self.radius,
+      self.radius,
+    )

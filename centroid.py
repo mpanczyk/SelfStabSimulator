@@ -28,6 +28,13 @@ class CentroidAlgNode(basenode.BaseNode):
     'p': RandomInt(upper_bound=10),
   }
 
+  def get_radius(self):
+    if self.p == self.id:
+      return 2*self._r
+    return self._r
+
+  radius = property(get_radius, basenode.BaseNode.set_radius)
+
   def wCorrect(self):
     for j in self.neighbours:
       weight = self.w + sum(k.W[self.id] for k in self.neighbours-{j})
@@ -91,12 +98,14 @@ class CentroidAlgNode(basenode.BaseNode):
 def test_network():
   import basenetwork
   net = basenetwork.BaseNetwork()
-  w1 = CentroidAlgNode(id=1, w=5)
+  w1 = CentroidAlgNode(id=1, w=5, _x=20, _y=30)
+  #w1.W[2]=5
+  #w1.p=2
   net += w1
-  w2 = CentroidAlgNode(id=2, w=3, neighbours=[w1])
-  w3 = CentroidAlgNode(id=3, w=2, neighbours=[w2])
-  w4 = CentroidAlgNode(id=4, w=5, neighbours=[w2])
-  w5 = CentroidAlgNode(id=5, w=4, neighbours=[w4])
-  w6 = CentroidAlgNode(id=6, w=1, neighbours=[w5])
-  w7 = CentroidAlgNode(id=7, w=10, neighbours=[w5])
+  w2 = CentroidAlgNode(id=2, w=3, neighbours=[w1], _x=70, _y=80)
+  w3 = CentroidAlgNode(id=3, w=2, neighbours=[w2], _x=20, _y=130)
+  w4 = CentroidAlgNode(id=4, w=5, neighbours=[w2], _x=120, _y=80)
+  w5 = CentroidAlgNode(id=5, w=4, neighbours=[w4], _x=170, _y=80)
+  w6 = CentroidAlgNode(id=6, w=1, neighbours=[w5], _x=220, _y=30)
+  w7 = CentroidAlgNode(id=7, w=10, neighbours=[w5], _x=220, _y=130)
   return net
