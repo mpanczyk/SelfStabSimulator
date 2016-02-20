@@ -21,6 +21,11 @@ from PyQt5.QtCore import (
   QState,
 )
 
+from utils import (
+  diff_dict,
+  formated_diff,
+)
+
 class DrawArea(QWidget, object):
 
   def __init__(self, network, parent=None):
@@ -60,7 +65,19 @@ class MainWindow(QWidget, object):
     self.layout.addWidget(self.drawArea)
 
   def make_move(self):
-    self.network.move()
+    status = self.network.move()
+    for keys, values in formated_diff(
+      diff_dict(
+        status['prestate'].get_state(),
+        status['poststate'].get_state(),
+      )
+    ):
+      print('[{}]\t{}.{}: {}'.format(
+        status['rule'],
+        status['prestate'],
+        '.'.join(str(key) for key in keys),
+        ' -> '.join(str(value) for value in values),
+      ))
     if self.network.is_stabilised():
       self.move_button.setEnabled( False )
     self.drawArea.redraw()

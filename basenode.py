@@ -48,10 +48,7 @@ class BaseNode(object):
         self.variables.add(var)
 
   def __repr__(self):
-    return self.__class__.__name__ +\
-            '(' +\
-              ', '.join('{}={}'.format(var, repr(val)) for var, val in self.get_state().items()) +\
-            ')'
+    return '{}({})'.format(self.__class__.__name__, self.id)
 
   def connect(self, other):
     self.neighbours.add(other)
