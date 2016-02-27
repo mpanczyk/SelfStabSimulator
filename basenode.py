@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import uuid
+from functools import (
+  total_ordering,
+)
 from PyQt5.QtCore import (
   QPoint,
 )
@@ -16,6 +19,7 @@ from randomtypes import (
 )
 import utils
 
+@total_ordering
 class BaseNode(object):
   '''Abstract class representing a node in a self-stabilising system.
      
@@ -49,6 +53,9 @@ class BaseNode(object):
 
   def __repr__(self):
     return '{}({})'.format(self.__class__.__name__, self.id)
+
+  def __le__(self, other):
+    return self.id <= other.id
 
   def connect(self, other):
     self.neighbours.add(other)
