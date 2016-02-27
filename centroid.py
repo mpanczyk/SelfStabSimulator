@@ -5,6 +5,7 @@ import collections
 
 from utils import (
   updated_dict,
+  random_pick,
 )
 import basenode
 from randomtypes import (
@@ -28,8 +29,12 @@ class CentroidAlgNode(basenode.BaseNode):
     'p': RandomInt(upper_bound=10),
   }
 
+  def __init__(self, *args, **kwargs):
+    super(CentroidAlgNode, self).__init__(*args, **kwargs)
+    self.p = random_pick(list(self.neighbours)+[self])
+
   def get_radius(self):
-    if self.p == self.id:
+    if self.p == self:
       return 2*self._r
     return self._r
 
@@ -37,8 +42,8 @@ class CentroidAlgNode(basenode.BaseNode):
 
   def wCorrect(self):
     for j in self.neighbours:
-      weight = self.w + sum(k.W[self.id] for k in self.neighbours-{j})
-      if self.W[j.id] != weight:
+      weight = self.w + sum(k.W[self] for k in self.neighbours-{j})
+      if self.W[j] != weight:
         return False, j, weight
     return True, None, None
 
@@ -46,7 +51,7 @@ class CentroidAlgNode(basenode.BaseNode):
     correct, j, new_weight = self.wCorrect()
     if not correct:
       return True, {
-        'W': updated_dict(self.W, j.id, new_weight),
+        'W': updated_dict(self.W, j, new_weight),
       }
     return False, {}
 
@@ -54,45 +59,45 @@ class CentroidAlgNode(basenode.BaseNode):
     correct, _, _ = self.wCorrect()
     if correct:
       neighbour = self.get_random_neighbour()
-      half_tree_weight = (self.W[neighbour.id] + neighbour.W[self.id])/2.0
-      if all(j.W[self.id] < half_tree_weight for j in self.neighbours):
-        if self.p != self.id:
-          return True, {'p': self.id}
+      half_tree_weight = (self.W[neighbour] + neighbour.W[self])/2.0
+      if all(j.W[self] < half_tree_weight for j in self.neighbours):
+        if self.p != self:
+          return True, {'p': self}
     return False, {}
  
   def rule_3(self):
     correct, _, _ = self.wCorrect()
     if correct:
       neighbour = self.get_random_neighbour()
-      half_tree_weight = (self.W[neighbour.id] + neighbour.W[self.id])/2.0
+      half_tree_weight = (self.W[neighbour] + neighbour.W[self])/2.0
       for j in self.neighbours:
-        if j.W[self.id] > half_tree_weight:
-          if self.p != j.id:
-            return True, {'p': j.id}
+        if j.W[self] > half_tree_weight:
+          if self.p != j:
+            return True, {'p': j}
     return False, {}
     
   def rule_4(self):
     correct, _, _ = self.wCorrect()
     if correct:
       neighbour = self.get_random_neighbour()
-      half_tree_weight = (self.W[neighbour.id] + neighbour.W[self.id])/2.0
+      half_tree_weight = (self.W[neighbour] + neighbour.W[self])/2.0
       for j in self.neighbours:
-        if j.W[self.id] == half_tree_weight:
+        if j.W[self] == half_tree_weight:
           if self.id > j.id:
-            if self.p != self.id:
-              return True, {'p': self.id}
+            if self.p != self:
+              return True, {'p': self}
     return False, {}
 
   def rule_5(self):
     correct, _, _ = self.wCorrect()
     if correct:
       neighbour = self.get_random_neighbour()
-      half_tree_weight = (self.W[neighbour.id] + neighbour.W[self.id])/2.0
+      half_tree_weight = (self.W[neighbour] + neighbour.W[self])/2.0
       for j in self.neighbours:
-        if j.W[self.id] == half_tree_weight:
+        if j.W[self] == half_tree_weight:
           if self.id < j.id:
-            if self.p != j.id:
-              return True, {'p': j.id}
+            if self.p != j:
+              return True, {'p': j}
     return False, {}
 
 def test_network():
