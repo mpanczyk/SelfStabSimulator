@@ -21,6 +21,7 @@ from PyQt5.QtCore import (
 )
 from PyQt5.QtWidgets import (
   QTreeView,
+  QTableView,
 )
 
 from utils import (
@@ -87,6 +88,38 @@ def getItems(obj, level=0):
       retVal.append([keyItem, valueItem])
   return retVal
 
+class MovesView(QTableView, object):
+  def __init__(self, parent=None):
+    super(MovesView, self).__init__(parent)
+    self.setModel(QStandardItemModel(self))
+    self.model().setHorizontalHeaderLabels([
+      'move',
+      'node',
+      'rule',
+      'variable',
+      'pre-value',
+      'post-value',
+    ])
+    self.moveNo = 1
+
+  def addRow(self, status):
+    for keys, values in formated_diff(
+      diff_dict(
+        status['prestate'].get_state(),
+        status['poststate'].get_state(),
+      )
+    ):
+      self.model().appendRow(map(lambda x: QStandardItem(str(x)), [
+        self.moveNo,
+        status['prestate'].id,
+        status['rule'],
+        '.'.join(str(key) for key in keys),
+        values[0],
+        values[1],
+      ]))
+    self.moveNo += 1
+    self.resizeColumnsToContents()
+    self.scrollToBottom()
 
 class VariablesView(QTreeView, object):
   def __init__(self, network, parent=None):
@@ -99,6 +132,8 @@ class VariablesView(QTreeView, object):
     for row in getItems(self.network):
       self.model().appendRow(row)
     self.expandAll()
+    self.resizeColumnToContents(0)
+    self.resizeColumnToContents(1)
 
 class DrawArea(QWidget, object):
 
@@ -135,28 +170,22 @@ class MainWindow(QWidget, object):
     self.drawArea = DrawArea(self.network, self)
     self.drawArea.resize(800, 600)
     self.variablesView = VariablesView(self.network.nodes, self)
-    
+    self.movesView = MovesView(self)
+
     self.mainLayout = QHBoxLayout(self)
-    self.mainLayout.addWidget(self.drawArea, 3)
+    self.leftLayout = QVBoxLayout()
+    self.leftLayout.addWidget(self.drawArea, 1)
+    self.leftLayout.addWidget(self.movesView, 1)
     self.rightLayout = QVBoxLayout()
-    self.mainLayout.addLayout(self.rightLayout, 3)
     self.rightLayout.addWidget(self.move_button)
     self.rightLayout.addWidget(self.variablesView)
 
+    self.mainLayout.addLayout(self.leftLayout, 3)
+    self.mainLayout.addLayout(self.rightLayout, 3)
+
   def make_move(self):
     status = self.network.move()
-    for keys, values in formated_diff(
-      diff_dict(
-        status['prestate'].get_state(),
-        status['poststate'].get_state(),
-      )
-    ):
-      print('[{}]\t{}.{}: {}'.format(
-        status['rule'],
-        status['prestate'],
-        '.'.join(str(key) for key in keys),
-        ' -> '.join(str(value) for value in values),
-      ))
+    self.movesView.addRow(status)
     if self.network.is_stabilised():
       self.move_button.setEnabled( False )
     self.drawArea.redraw()
