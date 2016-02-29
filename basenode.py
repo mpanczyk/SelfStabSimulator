@@ -7,6 +7,7 @@ from functools import (
 )
 from PyQt5.QtCore import (
   QPoint,
+  Qt,
 )
 from PyQt5.QtGui import (
   QBrush,
@@ -152,4 +153,12 @@ class BaseNode(object):
       self.centre(),
       self.radius,
       self.radius,
+    )
+    painter.drawText(
+      self._x-self.radius,
+      self._y-self.radius,
+      2*self.radius,
+      2*self.radius,
+      Qt.AlignCenter | Qt.AlignVCenter,
+      str(self.id)
     )
