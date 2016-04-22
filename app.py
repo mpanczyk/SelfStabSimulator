@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import (
   QPainter,
   QBrush,
+  QColor,
   QStandardItemModel,
   QStandardItem,
   QFont,
@@ -103,20 +104,29 @@ class MovesView(QTableView, object):
     self.moveNo = 1
 
   def addRow(self, status):
+    backgrounds = (
+      QBrush(QColor(0xef, 0xef, 0xef)),
+      QBrush(QColor(0xff, 0xff, 0xff)),
+    )
     for keys, values in formated_diff(
       diff_dict(
         status['prestate'].get_state(),
         status['poststate'].get_state(),
       )
     ):
-      self.model().appendRow(map(lambda x: QStandardItem(str(x)), [
+      items = [QStandardItem(str(x)) for x in (
         self.moveNo,
         status['prestate'].id,
         status['rule'],
         '.'.join(str(key) for key in keys),
         values[0],
         values[1],
-      ]))
+      )]
+      for item in items:
+        item.setBackground(
+          backgrounds[self.moveNo % 2]
+        )
+      self.model().appendRow(items)
     self.moveNo += 1
     self.resizeColumnsToContents()
     self.scrollToBottom()
