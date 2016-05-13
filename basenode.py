@@ -55,6 +55,9 @@ class BaseNode(object):
   def __repr__(self):
     return '{}({})'.format(self.__class__.__name__, self.id)
 
+  def __str__(self):
+    return 'node({})'.format(self.id)
+
   def __le__(self, other):
     return self.id <= other.id
 
