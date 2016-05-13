@@ -48,7 +48,7 @@ class BaseNetwork(object):
 
   def draw(self, painter):
 
-    painter.setWindow( self.boundingBox() )
+    painter.setWindow( self.adjustedBoundingBox(painter) )
 
     # Edges drawing
     drawn_edges = set()
@@ -72,3 +72,16 @@ class BaseNetwork(object):
     width = maxi_x - mini_x
     height = maxi_y - mini_y
     return QRect(mini_x-margin, mini_y-margin, 2*margin+width, 2*margin+height)
+
+  def adjustedBoundingBox(self, painter):
+    boundingBox = self.boundingBox()
+    bbRatio = boundingBox.height() / boundingBox.width()
+    viewPort = painter.viewport()
+    vpRatio = viewPort.height() / viewPort.width()
+    if vpRatio > bbRatio:
+      diff = boundingBox.width() * (vpRatio-bbRatio)
+      boundingBox.adjust( 0, -diff/2, 0, diff/2)
+    elif vpRatio < bbRatio:
+      diff = boundingBox.height() * (1/vpRatio-1/bbRatio)
+      boundingBox.adjust( -diff/2, 0, diff/2, 0 )
+    return boundingBox
