@@ -67,7 +67,7 @@ def getItems(obj, level=0):
     return retVal
   if isinstance(obj, dict):
     for key, value in sorted(obj.items()):
-      if key not in exclude_keys and not key.startswith('_'):
+      if key not in exclude_keys and not (isinstance(key, str) and key.startswith('_')):
         keyItem = QStandardItem(str(key))
         children = []
         if hasattr(value, '__iter__'):
