@@ -51,13 +51,13 @@ class BaseNetwork(object):
     painter.setWindow( self.adjustedBoundingBox(painter) )
 
     # Edges drawing
-    drawn_edges = set()
-    for node in self.nodes:
-      for neighbour in node.neighbours:
-        edge = frozenset((node, neighbour))
-        if edge not in drawn_edges:
-          drawn_edges.add(edge)
-          self.draw_edge(painter, edge)
+    edges = {
+      frozenset((node, neighbour))
+      for node in self.nodes
+      for neighbour in node.neighbours
+    }
+    for edge in edges:
+      self.draw_edge(painter, edge)
 
     # Nodes drawing
     for node in self.nodes:
