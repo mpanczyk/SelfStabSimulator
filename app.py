@@ -174,14 +174,12 @@ class MainWindow(QWidget, object):
     super(MainWindow, self).__init__(parent)
     
     self.setWindowTitle('Selfstabilising Systems Simulator')
-    self.resize(1200, 1000)
     
     self.move_button = QPushButton("Move", self)
     self.move_button.clicked.connect(self.make_move)
     
     self.network = network
     self.drawArea = DrawArea(self.network, self)
-    self.drawArea.resize(800, 600)
     self.variablesView = VariablesView(self.network.nodes, self)
     self.movesView = MovesView(self)
 
