@@ -48,8 +48,6 @@ class BaseNetwork(object):
 
   def draw(self, painter):
 
-    painter.setWindow( self.adjustedBoundingBox(painter) )
-
     # Edges drawing
     edges = {
       frozenset((node, neighbour))

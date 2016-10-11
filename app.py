@@ -161,6 +161,9 @@ class DrawArea(QWidget, object):
       QBrush(Qt.white),
     )
     painter.setRenderHint(QPainter.Antialiasing)
+    painter.setWindow(
+      self.network.adjustedBoundingBox(painter)
+    )
     self.network.draw( painter )
 
 
