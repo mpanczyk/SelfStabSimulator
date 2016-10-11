@@ -69,7 +69,12 @@ class BaseNetwork(object):
     maxi_y = max(node._y for node in self.nodes)
     width = maxi_x - mini_x
     height = maxi_y - mini_y
-    return QRect(mini_x-margin, mini_y-margin, 2*margin+width, 2*margin+height)
+    return QRect(
+      mini_x-margin,
+      mini_y-margin,
+      2*margin+width,
+      2*margin+height
+    )
 
   def adjustedBoundingBox(self, painter):
     boundingBox = self.boundingBox()

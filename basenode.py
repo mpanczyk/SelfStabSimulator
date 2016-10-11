@@ -129,7 +129,10 @@ class BaseNode(object):
     return rule_name
 
   def get_state(self):
-    return {var: self.__getattribute__(var) for var in self.variables}
+    return {
+      var: self.__getattribute__(var)
+      for var in self.variables
+    }
 
   def get_random_neighbour(self):
     return utils.random_pick(list(self.neighbours))
